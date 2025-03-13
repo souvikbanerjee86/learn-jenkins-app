@@ -12,7 +12,8 @@ pipeline {
             steps {
                 sh '''
                 ls -la
-                
+                npm ci
+                ls -la
                 '''
             }
         }
