@@ -7,7 +7,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:latest' // Replace with your Node.js image
-                    args '-v /var/lib/jenkins/workspace:/var/lib/jenkins/workspace'
+                    args '-u root:root' // Run as root (adjust as needed)
         }
             }
             steps {
