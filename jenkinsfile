@@ -8,6 +8,7 @@ pipeline {
                 docker {
                     image 'node:latest' // Replace with your Node.js image
                     args '-u root:root' // Run as root (adjust as needed)
+                    reuseNode true
         }
             }
             steps {
@@ -15,6 +16,7 @@ pipeline {
                npm cache clean --force
                npm ci
                npm run build
+               ls -la
                '''
             }
         }
