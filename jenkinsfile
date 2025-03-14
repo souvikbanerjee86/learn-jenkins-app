@@ -63,7 +63,21 @@ pipeline {
                 }     
             }
         }
-
+        stage('Deploy') {
+            agent {
+                docker {
+                    image 'node:latest' // Replace with your Node.js image
+                    args '-u root:root' // Run as root (adjust as needed)
+                    reuseNode true
+        }
+            }
+            steps {
+               sh '''
+               npm install netlify-cli
+               node_modules/.bin/netlify --version
+               '''
+            }
+        }
         
     }
 
