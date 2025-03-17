@@ -85,6 +85,36 @@ pipeline {
                node_modules/.bin/node-jq -r '.deploy_url' deployment-output.json
                '''
             }
+            script {
+                env.STAGE_URL = sh(script:"node_modules/.bin/node-jq -r '.deploy_url' deployment-output.json",returnStdout:true)
+            }
+        }
+
+
+          stage('Stage E2E') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    args '-u root:root' // Run as root (adjust as needed)
+                    reuseNode true
+                }
+            }
+
+            environment {
+                CI_ENVIRONMENT_URL = "${env.STAGE_URL}"
+            }
+
+            steps {
+                sh '''
+                    npx playwright test  --reporter=html
+                '''
+            }
+
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
         }
 
         stage('Approval') {
